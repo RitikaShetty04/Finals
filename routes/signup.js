@@ -72,7 +72,7 @@ exports.signup = function(req, res) {
 											console.log("Server 3: Update Success" +body);
 										}
 									});
-							res.send("index", {'Message' : "Welcome " + name + " " + id});
+							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
 						}
 					});
 		}
