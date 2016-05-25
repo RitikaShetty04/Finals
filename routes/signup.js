@@ -39,7 +39,7 @@ exports.signup = function(req, res) {
 						if (err) {
 							console.log('[test.insert] ', err.message);
 						} else {
-							nano2.db.replicate('user','http://52.40.31.236:5984/user',
+							nano2.db.replicate('user','http://52.27.82.49:5984/user',
 											{
 												create_target : true
 											},
@@ -50,7 +50,7 @@ exports.signup = function(req, res) {
 													console.log("Server 1: Update Success" +body);
 													}
 											});
-							nano2.db.replicate('user','http://52.37.144.96:5984/user',
+							nano2.db.replicate('user','http://52.37.241.178:5984/user',
 									{
 										create_target : true
 									},
@@ -61,7 +61,7 @@ exports.signup = function(req, res) {
 											console.log("Server 2: Update Success" +body);
 										}
 									});
-							nano2.db.replicate('user','http://52.27.41.16:5984/user',
+							nano2.db.replicate('user','http://52.38.89.244:5984/user',
 									{
 										create_target : true
 									},
