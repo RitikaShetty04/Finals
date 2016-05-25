@@ -188,7 +188,7 @@ exports.signup = function(req, res) {
 			var instance2="http://52.37.241.178:5984/";
 			var instance3="http://52.38.89.244:5984/";
 			
-			finals.get(001, function(err,body){
+			finals.get('001', function(err,body){
 				if(err)
 				{
 					console.log('[test.get] ', err.message);
