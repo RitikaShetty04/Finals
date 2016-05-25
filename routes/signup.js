@@ -7,16 +7,6 @@ exports.signup = function(req, res) {
 	var id = req.body.id;
 
 	var test = nano.use('test');
-/*
-	http.get({
-		'host' : 'api.ipify.org',
-		'port' : 80,
-		'path' : '/'
-	}, function(resp) {
-		resp.on('data', function(ip) {
-			console.log("My public IP address is: " + ip);
-		});
-	});*/
 
 	//test db stores the IP address
 	var ip;
@@ -29,7 +19,7 @@ exports.signup = function(req, res) {
 		{
 			console.log("Result: "+JSON.stringify(body));
 			ip="http://" +body.IPaddress+":5984/";
-			console.log("Request received at" +body.IPaddress);
+			console.log("Request received at " +body.IPaddress);
 			var nano2 = require('nano')(ip);
 			
 			//user is the actual database
@@ -139,7 +129,7 @@ exports.signup = function(req, res) {
 										}
 									});
 						
-							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
+							res.send({title:"Express",Message : "Welcome " + name + " " + id});
 						}
 					});
 		}
