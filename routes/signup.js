@@ -35,8 +35,7 @@ exports.signup = function(req, res) {
 					function(err, body, header) {
 						if (err) {
 							console.log('[test.insert] ', err.message);
-						} else {
-							
+						} else {						
 							nano2.db.replicate('user','http://52.37.241.178:5984/user',
 									{
 										create_target : true
@@ -44,22 +43,36 @@ exports.signup = function(req, res) {
 									function(err,body) {
 										if (err) {
 											console.log("Server 2 : Partition present, Replication Failed"+ err);
+											nano2.db.replicate('user','http://52.38.89.244:5984/user',
+													{
+														create_target : true
+													},
+													function(err,body) {
+														if (err) {
+															console.log("Server 3 : Partition present, Replication Failed"+ err);
+															res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 1, Replication fail at 2 and 3"});
+														} else {
+															console.log("Server 3: Replication Success" +body);
+															res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 1, Replication fail at 2 and Success at 3"});
+														}
+													});
 										} else {
 											console.log("Server 2: Replication Success" +body);
+											nano2.db.replicate('user','http://52.38.89.244:5984/user',
+													{
+														create_target : true
+													},
+													function(err,body) {
+														if (err) {
+															console.log("Server 3 : Partition present, Replication Failed"+ err);
+															res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 1, Replication Success at 2 and Fail at 3"});
+														} else {
+															console.log("Server 3: Replication Success" +body);
+															res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 1, Replication Success at 2 and 3"});
+														}
+													});
 										}
 									});
-							nano2.db.replicate('user','http://52.38.89.244:5984/user',
-									{
-										create_target : true
-									},
-									function(err,body) {
-										if (err) {
-											console.log("Server 3 : Partition present, Replication Failed"+ err);
-										} else {
-											console.log("Server 3: Replication Success" +body);
-										}
-									});
-							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
 						}
 					});
 		}
@@ -78,23 +91,37 @@ exports.signup = function(req, res) {
 											function(err, body) {
 												if (err) {
 													console.log("Server 1 : Partition present, Replication Failed"+ err);
+													nano2.db.replicate('user','http://52.38.89.244:5984/user',
+															{
+																create_target : true
+															},
+															function(err,body) {
+																if (err) {
+																	console.log("Server 3 : Partition present, Replication Failed"+ err);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 2, Replication fail at 1 and 3"});
+																} else {
+																	console.log("Server 3: Replication Success" +body);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 2, Replication fail at 1 and  success at 3"});
+																}
+															});
 												} else {
 													console.log("Server 1: Replication Success" +body);
+													nano2.db.replicate('user','http://52.38.89.244:5984/user',
+															{
+																create_target : true
+															},
+															function(err,body) {
+																if (err) {
+																	console.log("Server 3 : Partition present, Replication Failed"+ err);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 2, Replication success at 1 and fail at 3"});
+																} else {
+																	console.log("Server 3: Replication Success" +body);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 2, Replication success at 1 and 3"});
+																}
+															});
 													}
 											});
 						
-							nano2.db.replicate('user','http://52.38.89.244:5984/user',
-									{
-										create_target : true
-									},
-									function(err,body) {
-										if (err) {
-											console.log("Server 3 : Partition present, Replication Failed"+ err);
-										} else {
-											console.log("Server 3: Replication Success" +body);
-										}
-									});
-							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
 						}
 					});
 		}
@@ -113,23 +140,37 @@ exports.signup = function(req, res) {
 											function(err, body) {
 												if (err) {
 													console.log("Server 1 : Partition present, Replication Failed"+ err);
+													nano2.db.replicate('user','http://52.37.241.178:5984/user',
+															{
+																create_target : true
+															},
+															function(err,body) {
+																if (err) {
+																	console.log("Server 2 : Partition present, Replication Failed"+ err);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 3, Replication fail at 1 and 2"});
+																} else {
+																	console.log("Server 2: Replication Success" +body);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 3, Replication fail at 1 and success at 2"});
+																}
+															});
 												} else {
 													console.log("Server 1: Replication Success" +body);
+													nano2.db.replicate('user','http://52.37.241.178:5984/user',
+															{
+																create_target : true
+															},
+															function(err,body) {
+																if (err) {
+																	console.log("Server 2 : Partition present, Replication Failed"+ err);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 3, Replication success at 1 and fail at 2"});
+																} else {
+																	console.log("Server 2: Replication Success" +body);
+																	res.send({title:"Express",Message : "Welcome " + name + " " + id, Status:"Request received at Server 3, Replication success at 1 and 2"});
+																}
+															});
 													}
 											});
-							nano2.db.replicate('user','http://52.37.241.178:5984/user',
-									{
-										create_target : true
-									},
-									function(err,body) {
-										if (err) {
-											console.log("Server 2 : Partition present, Replication Failed"+ err);
-										} else {
-											console.log("Server 2: Replication Success" +body);
-										}
-									});
-						
-							res.send({title:"Express",Message : "Welcome " + name + " " + id});
+							
 						}
 					});
 		}
