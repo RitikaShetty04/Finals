@@ -29,11 +29,88 @@ exports.signup = function(req, res) {
 		{
 			console.log("Result: "+JSON.stringify(body));
 			ip="http://" +body.IPaddress+":5984/";
-			console.log("IP:" +ip);
+			console.log("Request received at" +body.IPaddress);
 			var nano2 = require('nano')(ip);
 			
 			//user is the actual database
 			var user= nano2.use('user');
+			
+			var instance1="http://52.27.82.49:5984/";
+			var instance2="http://52.37.241.178:5984/";
+			var instance3="http://52.38.89.244:5984/";
+			
+			if(ip==instance1)
+			{
+				user.insert({"Name" : name,"ID" : id},'',
+					function(err, body, header) {
+						if (err) {
+							console.log('[test.insert] ', err.message);
+						} else {
+							
+							nano2.db.replicate('user','http://52.37.241.178:5984/user',
+									{
+										create_target : true
+									},
+									function(err,body) {
+										if (err) {
+											console.log("Server 2 : Partition present, Replication Failed"+ err);
+										} else {
+											console.log("Server 2: Replication Success" +body);
+										}
+									});
+							nano2.db.replicate('user','http://52.38.89.244:5984/user',
+									{
+										create_target : true
+									},
+									function(err,body) {
+										if (err) {
+											console.log("Server 3 : Partition present, Replication Failed"+ err);
+										} else {
+											console.log("Server 3: Replication Success" +body);
+										}
+									});
+							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
+						}
+					});
+		}
+			//Request at 2:
+			else if(ip==instance2)
+			{
+				user.insert({"Name" : name,"ID" : id},'',
+					function(err, body, header) {
+						if (err) {
+							console.log('[test.insert] ', err.message);
+						} else {
+							nano2.db.replicate('user','http://52.27.82.49:5984/user',
+											{
+												create_target : true
+											},
+											function(err, body) {
+												if (err) {
+													console.log("Server 1 : Partition present, Replication Failed"+ err);
+												} else {
+													console.log("Server 1: Replication Success" +body);
+													}
+											});
+						
+							nano2.db.replicate('user','http://52.38.89.244:5984/user',
+									{
+										create_target : true
+									},
+									function(err,body) {
+										if (err) {
+											console.log("Server 3 : Partition present, Replication Failed"+ err);
+										} else {
+											console.log("Server 3: Replication Success" +body);
+										}
+									});
+							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
+						}
+					});
+		}
+			//Request at 3
+			else
+		{
 			user.insert({"Name" : name,"ID" : id},'',
 					function(err, body, header) {
 						if (err) {
@@ -45,9 +122,9 @@ exports.signup = function(req, res) {
 											},
 											function(err, body) {
 												if (err) {
-													console.log("Server 1 : Fail"+ err);
+													console.log("Server 1 : Partition present, Replication Failed"+ err);
 												} else {
-													console.log("Server 1: Update Success" +body);
+													console.log("Server 1: Replication Success" +body);
 													}
 											});
 							nano2.db.replicate('user','http://52.37.241.178:5984/user',
@@ -56,25 +133,16 @@ exports.signup = function(req, res) {
 									},
 									function(err,body) {
 										if (err) {
-											console.log("Server 2 : Fail"+ err);
+											console.log("Server 2 : Partition present, Replication Failed"+ err);
 										} else {
-											console.log("Server 2: Update Success" +body);
+											console.log("Server 2: Replication Success" +body);
 										}
 									});
-							nano2.db.replicate('user','http://52.38.89.244:5984/user',
-									{
-										create_target : true
-									},
-									function(err,body) {
-										if (err) {
-											console.log("Server 3 : Fail"+ err);
-										} else {
-											console.log("Server 3: Update Success" +body);
-										}
-									});
+						
 							res.render("index", {title:"Express",Message : "Welcome " + name + " " + id});
 						}
 					});
+		}
 		}
 	});
 	
