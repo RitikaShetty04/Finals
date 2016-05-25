@@ -16,7 +16,7 @@ exports.signup = function(req, res) {
 			console.log('[test.get] ', err.message);
 		}
 		else
-		{
+		{/*
 			console.log("Result: "+JSON.stringify(body));
 			ip="http://" +body.IPaddress+":5984/";
 			console.log("Request received at " +body.IPaddress);
@@ -174,6 +174,32 @@ exports.signup = function(req, res) {
 						}
 					});
 		}
+		*/
+			console.log("Result: "+JSON.stringify(body));
+			var ipadd=body.IPaddress;
+			ip="http://" +body.IPaddress+":5984/";
+			console.log("Request received at " +body.IPaddress);
+			var nano2 = require('nano')(ip);
+			
+			//user is the actual database
+			var finals= nano2.use('finals');
+			
+			var instance1="http://52.27.82.49:5984/";
+			var instance2="http://52.37.241.178:5984/";
+			var instance3="http://52.38.89.244:5984/";
+			
+			finals.get(001, function(err,body){
+				if(err)
+				{
+					console.log('[test.get] ', err.message);
+					return;
+				}
+				else
+				{
+					//console.log("Customer details:" +checkoutProduct);
+					res.send({title:"Express",Message:"Request sent to IP: " +ipadd, Result:body});
+				}
+			});
 		}
 	});
 	
